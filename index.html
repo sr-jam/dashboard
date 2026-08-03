@@ -1,5 +1,6 @@
-<title>Site Board</title>
+<title>Dashboard Proto</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzNCAzMiI+CiAgPHBhdGggZD0iTTI2LjgwNTYgMTQuMDA1VjBMMjMuNTg3NiAzLjIxOEwyMC4zOTc2IDBMMjAuMzY2NiA3LjU3N0wxOC4wNDM2IDUuMjQ1TDguOTI2NTYgNS4yMjNMMC4yMjY1NjIgMTMuOVYyNS41NTFMNi42NTk1NiAzMkgyMC4zNDk2TDI2LjM2MjYgMjZMMjYuODA1NiAyNS41NkwyNi44MTE2IDIzLjA4NkwyOS4yMzI2IDI1LjU2NEwyOS4yMTg2IDIwLjk0NUwzMy43MTg2IDIwLjkyTDI2LjgwNTYgMTQuMDA1Wk0yMC4zNDA2IDE2LjYxNlYyNS41NjRINi42NTk1NlYxNi42MTZMMTMuNDk5NiA5LjgxNkwyMC4zNDA2IDE2LjYxNloiIGZpbGw9IiNDMDIwMTQiLz4KICA8cGF0aCBkPSJNMTMuMDExNCAxNi42NDA2SDEwLjM1OTRWMTkuMjkyNkgxMy4wMTE0VjE2LjY0MDZaIiBmaWxsPSIjMEQ1Njk3Ii8+CiAgPHBhdGggZD0iTTE2LjYyMDcgMTYuNjQwNkgxMy45Njg4VjE5LjI5MjZIMTYuNjIwN1YxNi42NDA2WiIgZmlsbD0iIzBENTY5NyIvPgogIDxwYXRoIGQ9Ik0xMy4wMTE0IDIwLjIxODhIMTAuMzU5NFYyMi44NzA3SDEzLjAxMTRWMjAuMjE4OFoiIGZpbGw9IiMwRDU2OTciLz4KICA8cGF0aCBkPSJNMTYuNjIwNyAyMC4yMTg4SDEzLjk2ODhWMjIuODcwN0gxNi42MjA3VjIwLjIxODhaIiBmaWxsPSIjMEQ1Njk3Ii8+CiAgPHBhdGggZD0iTTI2LjgxNDcgMjMuMDg3MkwyNi44MDg4IDI1LjU2MTJMMjAuMzQzOCAxOS4xNjcyVjE2LjYxNzJMMjYuODE0NyAyMy4wODcyWiIgZmlsbD0iI0EwMUQxNSIvPgo8L3N2Zz4K" />
 <style>
   @font-face {
     font-family: "Inter Variable";
@@ -64,6 +65,7 @@
     border: 1px solid var(--line);
     border-radius: 12px;
     padding: 24px;
+    text-align: center;
   }
   .gate-card .eyebrow { margin-bottom: 6px; }
   .gate-card .title { font-size: 22px; }
@@ -123,6 +125,19 @@
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--line);
   }
+  .brand-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .brand-logo { flex: none; display: flex; }
+  .brand-logo svg { display: block; }
+  .gate-logo {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 14px;
+  }
+
   .eyebrow {
     font-size: 11px;
     font-weight: 700;
@@ -255,14 +270,29 @@
     color: var(--text);
   }
   .card-body { flex: 1; min-width: 0; }
+  .card-title-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+  }
+  .unseen-dot {
+    flex: none;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
   .card-name {
     font-size: 15px;
     font-weight: 700;
     margin: 0;
+    min-width: 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
+  .card.is-seen .card-name { font-weight: 600; color: var(--text-muted); }
   .card-type {
     margin: 1px 0 0;
     font-size: 13px;
@@ -473,6 +503,16 @@
 
 <div class="gate" id="gate">
   <div class="gate-card">
+    <div class="gate-logo">
+      <svg width="30" height="28" viewBox="0 0 34 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M26.8056 14.005V0L23.5876 3.218L20.3976 0L20.3666 7.577L18.0436 5.245L8.92656 5.223L0.226562 13.9V25.551L6.65956 32H20.3496L26.3626 26L26.8056 25.56L26.8116 23.086L29.2326 25.564L29.2186 20.945L33.7186 20.92L26.8056 14.005ZM20.3406 16.616V25.564H6.65956V16.616L13.4996 9.816L20.3406 16.616Z" fill="#C02014"/>
+        <path d="M13.0114 16.6406H10.3594V19.2926H13.0114V16.6406Z" fill="#0D5697"/>
+        <path d="M16.6207 16.6406H13.9688V19.2926H16.6207V16.6406Z" fill="#0D5697"/>
+        <path d="M13.0114 20.2188H10.3594V22.8707H13.0114V20.2188Z" fill="#0D5697"/>
+        <path d="M16.6207 20.2188H13.9688V22.8707H16.6207V20.2188Z" fill="#0D5697"/>
+        <path d="M26.8147 23.0872L26.8088 25.5612L20.3438 19.1672V16.6172L26.8147 23.0872Z" fill="#A01D15"/>
+      </svg>
+    </div>
     <p class="eyebrow">Soumission Rénovation</p>
     <h1 class="title">Site Board</h1>
     <p class="subtext">Enter the password to continue.</p>
@@ -489,8 +529,22 @@
 
     <section class="screen screen-list" id="screen-list">
       <header class="topbar">
-        <p class="eyebrow">Soumission Rénovation</p>
-        <h1 class="title">Site Board</h1>
+        <div class="brand-row">
+          <span class="brand-logo">
+            <svg width="26" height="24" viewBox="0 0 34 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M26.8056 14.005V0L23.5876 3.218L20.3976 0L20.3666 7.577L18.0436 5.245L8.92656 5.223L0.226562 13.9V25.551L6.65956 32H20.3496L26.3626 26L26.8056 25.56L26.8116 23.086L29.2326 25.564L29.2186 20.945L33.7186 20.92L26.8056 14.005ZM20.3406 16.616V25.564H6.65956V16.616L13.4996 9.816L20.3406 16.616Z" fill="#C02014"/>
+              <path d="M13.0114 16.6406H10.3594V19.2926H13.0114V16.6406Z" fill="#0D5697"/>
+              <path d="M16.6207 16.6406H13.9688V19.2926H16.6207V16.6406Z" fill="#0D5697"/>
+              <path d="M13.0114 20.2188H10.3594V22.8707H13.0114V20.2188Z" fill="#0D5697"/>
+              <path d="M16.6207 20.2188H13.9688V22.8707H16.6207V20.2188Z" fill="#0D5697"/>
+              <path d="M26.8147 23.0872L26.8088 25.5612L20.3438 19.1672V16.6172L26.8147 23.0872Z" fill="#A01D15"/>
+            </svg>
+          </span>
+          <div>
+            <p class="eyebrow">Soumission Rénovation</p>
+            <h1 class="title">Site Board</h1>
+          </div>
+        </div>
         <p class="subtext" id="count-text">6 leads available</p>
       </header>
       <div class="search-row">
@@ -529,8 +583,7 @@
     bathroom: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16v3a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4v-3Z"></path><path d="M6 12V8a2 2 0 0 1 3.2-1.6"></path><line x1="17" y1="4" x2="17" y2="8"></line><line x1="4" y1="19" x2="4" y2="21"></line><line x1="20" y1="19" x2="20" y2="21"></line></svg>',
     basement: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 20 4 16 9 16 9 12 14 12 14 8 20 8"></polyline><line x1="20" y1="8" x2="20" y2="4"></line></svg>',
     roof: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 12 4l9 8"></path><line x1="17" y1="7.5" x2="17" y2="4"></line><path d="M5 12v7a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-7"></path></svg>',
-    deck: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="8" x2="21" y2="8"></line><line x1="3" y1="13" x2="21" y2="13"></line><line x1="3" y1="18" x2="21" y2="18"></line><line x1="6" y1="4" x2="6" y2="20"></line></svg>',
-    home: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7"></path><path d="M6 10v9a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-9"></path><line x1="10" y1="20" x2="10" y2="14" ></line><line x1="14" y1="20" x2="14" y2="14"></line></svg>'
+    deck: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="8" x2="21" y2="8"></line><line x1="3" y1="13" x2="21" y2="13"></line><line x1="3" y1="18" x2="21" y2="18"></line><line x1="6" y1="4" x2="6" y2="20"></line></svg>'
   };
 
   var LOCK_ICON = '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="9" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>';
@@ -543,7 +596,13 @@
     "Longueuil": [45.5312, -73.5185],
     "Terrebonne": [45.7057, -73.6468],
     "Boucherville": [45.6067, -73.4384],
-    "Repentigny": [45.7423, -73.4514]
+    "Repentigny": [45.7423, -73.4514],
+    "Brossard": [45.4506, -73.4432],
+    "Saint-Jérôme": [45.7748, -74.0032],
+    "Blainville": [45.6752, -73.8770],
+    "Mascouche": [45.7477, -73.6006],
+    "Lévis": [46.7382, -71.1917],
+    "Sherbrooke": [45.4042, -71.8929]
   };
 
   function mapEmbedUrl(city) {
@@ -560,86 +619,53 @@
     bathroom: "Bathroom",
     basement: "Basement",
     roof: "Roofing",
-    deck: "Exterior",
-    home: "Full-Home"
+    deck: "Exterior"
   };
 
   // Sample data — fields match the contractor's real schema:
   // ID, Type of Project, City, Postal Code, Start Date, Budget,
   // Project Description, Price of the Lead, CTA
   var PROJECTS = [
-    {
-      id: "LD-1042",
-      category: "kitchen",
-      type: "Kitchen Remodel",
-      city: "Montréal",
-      postalCode: "H2X 1K4",
-      startDate: "Jun 2, 2026",
-      budget: "$42,500",
-      description: "Full gut renovation of a 1960s galley kitchen — new layout opens the room to the dining area, with an island seating three.",
-      leadPrice: "$55",
-      cta: true
-    },
-    {
-      id: "LD-1043",
-      category: "bathroom",
-      type: "Bathroom Renovation",
-      city: "Laval",
-      postalCode: "H7T 2P3",
-      startDate: "Flexible",
-      budget: "$18,200",
-      description: "Renovation of a second-floor bathroom, converting a tub/shower combo to a curbless walk-in shower.",
-      leadPrice: "$38",
-      cta: true
-    },
-    {
-      id: "LD-1044",
-      category: "basement",
-      type: "Basement Finishing",
-      city: "Longueuil",
-      postalCode: "J4K 4Z2",
-      startDate: "Feb 10, 2026",
-      budget: "$35,000",
-      description: "Unfinished basement to be converted into a family room, home office nook, and a three-piece bathroom.",
-      leadPrice: "$45",
-      cta: false
-    },
-    {
-      id: "LD-1045",
-      category: "roof",
-      type: "Roof Replacement",
-      city: "Terrebonne",
-      postalCode: "J6Y 1V9",
-      startDate: "Jul 21, 2026",
-      budget: "$22,750",
-      description: "Tear-off and replacement of aging asphalt shingles on a seasonal cottage, including flashing and soffit repairs.",
-      leadPrice: "$40",
-      cta: true
-    },
-    {
-      id: "LD-1046",
-      category: "deck",
-      type: "Deck & Exterior",
-      city: "Boucherville",
-      postalCode: "J4B 5E7",
-      startDate: "Awaiting permit",
-      budget: "$15,900",
-      description: "Rear deck rebuild with composite decking and a pergola, pending municipal permit approval.",
-      leadPrice: "$30",
-      cta: false
-    },
-    {
-      id: "LD-1047",
-      category: "home",
-      type: "Full Home Renovation",
-      city: "Repentigny",
-      postalCode: "J6A 3K1",
-      startDate: "Flexible",
-      budget: "$128,000",
-      description: "Whole-home renovation spanning kitchen, two bathrooms, and an open-concept main floor reconfiguration.",
-      leadPrice: "$85",
-      cta: true
-    }
+    { id: "LD-1042", category: "kitchen", type: "Kitchen Remodel", city: "Montréal", postalCode: "H2X 1K4", startDate: "Jun 2, 2026", budget: "$42,500", leadPrice: "$55", cta: true,
+      description: "Full gut renovation of a 1960s galley kitchen — new layout opens the room to the dining area, with an island seating three." },
+    { id: "LD-1043", category: "bathroom", type: "Bathroom Renovation", city: "Laval", postalCode: "H7T 2P3", startDate: "Flexible", budget: "$18,200", leadPrice: "$38", cta: true,
+      description: "Renovation of a second-floor bathroom, converting a tub/shower combo to a curbless walk-in shower." },
+    { id: "LD-1044", category: "basement", type: "Basement Finishing", city: "Longueuil", postalCode: "J4K 4Z2", startDate: "Feb 10, 2026", budget: "$35,000", leadPrice: "$45", cta: false,
+      description: "Unfinished basement to be converted into a family room, home office nook, and a three-piece bathroom." },
+    { id: "LD-1045", category: "roof", type: "Roof Replacement", city: "Terrebonne", postalCode: "J6Y 1V9", startDate: "Jul 21, 2026", budget: "$22,750", leadPrice: "$40", cta: true,
+      description: "Tear-off and replacement of aging asphalt shingles on a seasonal cottage, including flashing and soffit repairs." },
+    { id: "LD-1046", category: "deck", type: "Deck & Exterior", city: "Boucherville", postalCode: "J4B 5E7", startDate: "Awaiting permit", budget: "$15,900", leadPrice: "$30", cta: false,
+      description: "Rear deck rebuild with composite decking and a pergola, pending municipal permit approval." },
+    { id: "LD-1047", category: "kitchen", type: "Kitchen Renovation", city: "Repentigny", postalCode: "J6A 3K1", startDate: "Flexible", budget: "$31,400", leadPrice: "$48", cta: true,
+      description: "Mid-size kitchen renovation with new cabinetry, an expanded pantry wall, and updated lighting." },
+    { id: "LD-1048", category: "bathroom", type: "Bathroom Refresh", city: "Brossard", postalCode: "J4W 1A1", startDate: "Aug 4, 2026", budget: "$12,600", leadPrice: "$32", cta: true,
+      description: "Powder room and main bathroom refresh — new vanity, tile, and fixtures throughout." },
+    { id: "LD-1049", category: "basement", type: "Basement Finishing", city: "Saint-Jérôme", postalCode: "J7Y 2K1", startDate: "Flexible", budget: "$27,300", leadPrice: "$42", cta: true,
+      description: "Basement conversion into a rec room and guest suite with a small kitchenette." },
+    { id: "LD-1050", category: "roof", type: "Roof Repair", city: "Blainville", postalCode: "J7C 4H2", startDate: "Jun 15, 2026", budget: "$19,800", leadPrice: "$36", cta: false,
+      description: "Partial roof repair after storm damage, replacing shingles and repairing eavestroughs." },
+    { id: "LD-1051", category: "deck", type: "Deck & Porch Rebuild", city: "Mascouche", postalCode: "J7K 0A3", startDate: "Flexible", budget: "$11,200", leadPrice: "$26", cta: true,
+      description: "Front porch and deck refresh with new railings and a stair rebuild." },
+    { id: "LD-1052", category: "kitchen", type: "Open-Concept Kitchen", city: "Lévis", postalCode: "G6V 4X2", startDate: "Sep 20, 2026", budget: "$38,900", leadPrice: "$52", cta: true,
+      description: "Open-concept kitchen renovation removing a half-wall into the living room." },
+    { id: "LD-1053", category: "bathroom", type: "Ensuite Renovation", city: "Sherbrooke", postalCode: "J1H 5N4", startDate: "Flexible", budget: "$21,500", leadPrice: "$40", cta: false,
+      description: "Ensuite bathroom renovation with a freestanding tub and double vanity." },
+    { id: "LD-1054", category: "basement", type: "Secondary Suite", city: "Montréal", postalCode: "H3K 1G6", startDate: "Oct 5, 2026", budget: "$44,000", leadPrice: "$58", cta: true,
+      description: "Basement legal secondary suite build-out including a separate entrance and kitchenette." },
+    { id: "LD-1055", category: "roof", type: "Roof Replacement", city: "Laval", postalCode: "H7X 3T2", startDate: "Flexible", budget: "$26,400", leadPrice: "$44", cta: true,
+      description: "Full roof replacement on a semi-detached home, including new ventilation." },
+    { id: "LD-1056", category: "deck", type: "Backyard Deck", city: "Longueuil", postalCode: "J4G 1R6", startDate: "Jul 8, 2026", budget: "$9,800", leadPrice: "$24", cta: true,
+      description: "Small backyard deck build with glass railings for a townhouse." },
+    { id: "LD-1057", category: "kitchen", type: "Galley Kitchen Reno", city: "Terrebonne", postalCode: "J6X 4B1", startDate: "Flexible", budget: "$29,600", leadPrice: "$46", cta: false,
+      description: "Galley kitchen renovation with new appliances and butcher block counters." },
+    { id: "LD-1058", category: "bathroom", type: "Guest Bathroom", city: "Boucherville", postalCode: "J4B 7K3", startDate: "Nov 2, 2026", budget: "$16,900", leadPrice: "$34", cta: true,
+      description: "Guest bathroom renovation with heated tile floor and walk-in shower." },
+    { id: "LD-1059", category: "basement", type: "Basement Finishing", city: "Repentigny", postalCode: "J5Y 3M8", startDate: "Flexible", budget: "$32,700", leadPrice: "$47", cta: true,
+      description: "Basement finishing with a home theatre nook and an additional bedroom." },
+    { id: "LD-1060", category: "roof", type: "Roof Replacement", city: "Brossard", postalCode: "J4Z 2E5", startDate: "Aug 30, 2026", budget: "$24,100", leadPrice: "$41", cta: false,
+      description: "Roof replacement on a bungalow, including new gutters and downspouts." },
+    { id: "LD-1061", category: "deck", type: "Two-Tier Deck", city: "Saint-Jérôme", postalCode: "J7Z 5L2", startDate: "Flexible", budget: "$13,400", leadPrice: "$28", cta: true,
+      description: "Two-tier deck build with a built-in bench and a pergola shade structure." }
   ];
 
   var FILTERS = [
@@ -667,6 +693,18 @@
   var activeFilter = "all";
   var searchQuery = "";
 
+  var SEEN_KEY = "site-board-seen";
+  function getSeenIds() {
+    try { return new Set(JSON.parse(localStorage.getItem(SEEN_KEY) || "[]")); }
+    catch (e) { return new Set(); }
+  }
+  function markSeen(id) {
+    var seen = getSeenIds();
+    if (seen.has(id)) return;
+    seen.add(id);
+    localStorage.setItem(SEEN_KEY, JSON.stringify(Array.from(seen)));
+  }
+
   function leadTag(p) {
     return p.cta
       ? '<span class="chip-tag available">' + p.leadPrice + "</span>"
@@ -687,7 +725,10 @@
       var matchesSearch = !q || (p.type + " " + p.city + " " + p.postalCode).toLowerCase().indexOf(q) !== -1;
       return matchesCategory && matchesSearch;
     });
-    countText.textContent = visible.length + (visible.length === 1 ? " lead available" : " leads available");
+    var seenIds = getSeenIds();
+    var unseenCount = visible.filter(function (p) { return !seenIds.has(p.id); }).length;
+    countText.textContent = visible.length + (visible.length === 1 ? " lead" : " leads") +
+      (unseenCount ? " · " + unseenCount + " new" : " · all viewed");
 
     if (!visible.length) {
       listEl.innerHTML = '<li class="empty">No leads match this filter.</li>';
@@ -695,12 +736,13 @@
     }
 
     listEl.innerHTML = visible.map(function (p) {
+      var seen = seenIds.has(p.id);
       return (
         '<li>' +
-        '<button class="card" type="button" data-id="' + p.id + '">' +
+        '<button class="card' + (seen ? " is-seen" : "") + '" type="button" data-id="' + p.id + '">' +
         '<span class="card-icon">' + ICONS[p.category] + "</span>" +
         '<span class="card-body">' +
-        '<p class="card-name">' + p.type + "</p>" +
+        '<span class="card-title-row">' + (seen ? "" : '<span class="unseen-dot" aria-hidden="true"></span>') + '<p class="card-name">' + p.type + "</p></span>" +
         '<p class="card-type">' + p.city + ", " + p.postalCode + "</p>" +
         '<span class="card-meta"><span>' + p.budget + "</span><span>&middot;</span>" + leadTag(p) + "</span>" +
         "</span>" +
@@ -756,6 +798,8 @@
     var p = PROJECTS.filter(function (x) { return x.id === id; })[0];
     if (!p) return;
     renderDetail(p);
+    markSeen(id);
+    renderList();
     app.classList.add("detail-open");
     screenDetail.setAttribute("aria-hidden", "false");
     screenList.setAttribute("aria-hidden", "true");
