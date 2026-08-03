@@ -1,0 +1,690 @@
+<title>Site Board</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<style>
+  :root {
+    --bg: #E9EDF0;
+    --surface: #FFFFFF;
+    --surface-2: #DCE2E6;
+    --text: #1C2430;
+    --text-muted: #5B6774;
+    --line: rgba(28,36,48,0.14);
+    --accent: #B8791E;
+    --accent-contrast: #FFFFFF;
+    --accent-soft: rgba(184,121,30,0.14);
+    --muted-chip: rgba(28,36,48,0.08);
+    --shadow: rgba(28,36,48,0.12);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12161C;
+      --surface: #1B212A;
+      --surface-2: #232B35;
+      --text: #E8EAED;
+      --text-muted: #9AA5B1;
+      --line: rgba(255,255,255,0.10);
+      --accent: #D9963B;
+      --accent-contrast: #1C2430;
+      --accent-soft: rgba(217,150,59,0.16);
+      --muted-chip: rgba(255,255,255,0.08);
+      --shadow: rgba(0,0,0,0.4);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #12161C;
+    --surface: #1B212A;
+    --surface-2: #232B35;
+    --text: #E8EAED;
+    --text-muted: #9AA5B1;
+    --line: rgba(255,255,255,0.10);
+    --accent: #D9963B;
+    --accent-contrast: #1C2430;
+    --accent-soft: rgba(217,150,59,0.16);
+    --muted-chip: rgba(255,255,255,0.08);
+    --shadow: rgba(0,0,0,0.4);
+  }
+  :root[data-theme="light"] {
+    --bg: #E9EDF0;
+    --surface: #FFFFFF;
+    --surface-2: #DCE2E6;
+    --text: #1C2430;
+    --text-muted: #5B6774;
+    --line: rgba(28,36,48,0.14);
+    --accent: #B8791E;
+    --accent-contrast: #FFFFFF;
+    --accent-soft: rgba(184,121,30,0.14);
+    --muted-chip: rgba(28,36,48,0.08);
+    --shadow: rgba(28,36,48,0.12);
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overscroll-behavior-y: contain;
+  }
+  .app {
+    max-width: 480px;
+    margin: 0 auto;
+    height: 100dvh;
+    position: relative;
+    overflow: hidden;
+    background:
+      linear-gradient(var(--bg), var(--bg)),
+      repeating-linear-gradient(0deg, var(--line) 0 1px, transparent 1px 88px),
+      repeating-linear-gradient(90deg, var(--line) 0 1px, transparent 1px 88px);
+    background-blend-mode: normal, overlay, overlay;
+  }
+  .stage {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    width: 200%;
+    height: 100%;
+    transition: transform 0.38s cubic-bezier(.32,.72,.35,1);
+    will-change: transform;
+  }
+  .app.detail-open .stage { transform: translateX(-50%); }
+  @media (prefers-reduced-motion: reduce) {
+    .stage { transition: none; }
+  }
+  .screen {
+    width: 50%;
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* ---- Top bar ---- */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    padding: calc(env(safe-area-inset-top, 0px) + 18px) 20px 14px;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 4px;
+  }
+  h1.title {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .subtext {
+    margin: 4px 0 0;
+    font-size: 13.5px;
+    color: var(--text-muted);
+  }
+
+  /* ---- Filter chips ---- */
+  .chips {
+    display: flex;
+    gap: 8px;
+    padding: 14px 20px 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .chips::-webkit-scrollbar { display: none; }
+  .chip {
+    flex: none;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 7px 14px;
+    border-radius: 100px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+  .chip[aria-pressed="true"] {
+    background: var(--text);
+    color: var(--bg);
+    border-color: var(--text);
+  }
+  @media (prefers-color-scheme: dark) {
+    .chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-contrast); border-color: var(--accent); }
+  }
+  :root[data-theme="dark"] .chip[aria-pressed="true"] {
+    background: var(--accent); color: var(--accent-contrast); border-color: var(--accent);
+  }
+
+  /* ---- Card list ---- */
+  .list {
+    list-style: none;
+    margin: 0;
+    padding: 6px 16px calc(env(safe-area-inset-bottom, 0px) + 28px);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    text-align: left;
+    padding: 14px;
+    border-radius: 16px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    box-shadow: 0 1px 2px var(--shadow);
+    font-family: inherit;
+    color: var(--text);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .card:active { transform: scale(0.985); }
+  .card-icon {
+    flex: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--surface-2);
+    display: grid;
+    place-items: center;
+    color: var(--text);
+  }
+  .card-body { flex: 1; min-width: 0; }
+  .card-name {
+    font-size: 15.5px;
+    font-weight: 700;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .card-type {
+    margin: 1px 0 0;
+    font-size: 13px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .card-meta {
+    margin-top: 7px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12.5px;
+    color: var(--text-muted);
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+  .card-chevron { flex: none; color: var(--text-muted); opacity: 0.6; }
+
+  .chip-tag {
+    display: inline-flex;
+    align-items: center;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    padding: 3px 8px;
+    border-radius: 100px;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  .chip-tag.available { color: var(--accent); background: var(--accent-soft); }
+  .chip-tag.claimed { color: var(--text-muted); background: var(--muted-chip); }
+
+  .empty {
+    margin: 40px 20px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  /* ---- Detail screen ---- */
+  .detail-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: calc(env(safe-area-inset-top, 0px) + 14px) 14px 12px;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+    position: sticky;
+    top: 0;
+    z-index: 5;
+  }
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    border: none;
+    background: none;
+    font-family: inherit;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--accent);
+    padding: 8px 6px 8px 4px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .detail-id {
+    margin-left: auto;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .detail-body {
+    padding: 16px 16px calc(env(safe-area-inset-bottom, 0px) + 32px);
+  }
+  .project-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    box-shadow: 0 1px 2px var(--shadow);
+    overflow: hidden;
+  }
+  .card-section {
+    padding: 18px;
+  }
+  .card-section + .card-section {
+    border-top: 1px solid var(--line);
+  }
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .card-header-icon {
+    flex: none;
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    background: var(--surface-2);
+    display: grid;
+    place-items: center;
+    color: var(--accent);
+  }
+  .card-header-text { min-width: 0; }
+  .eyebrow-type {
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 0 0 3px;
+  }
+  h2.detail-name {
+    font-size: 21px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin: 0 0 2px;
+    text-wrap: balance;
+  }
+  .detail-address {
+    margin: 0;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .facts-simple {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+  .fact-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .fact-row .fact-label {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .fact-row .fact-value {
+    font-size: 14.5px;
+    font-weight: 600;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+  .fact-row.highlight .fact-value {
+    color: var(--accent);
+    font-size: 15.5px;
+    font-weight: 700;
+  }
+
+  .card-section h3 {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 0 0 10px;
+  }
+  .description {
+    font-family: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+    font-size: 15.5px;
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  .cta-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    border: none;
+    border-radius: 12px;
+    padding: 14px;
+    font-family: inherit;
+    font-size: 15.5px;
+    font-weight: 700;
+    background: var(--accent);
+    color: var(--accent-contrast);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .cta-btn:active { transform: scale(0.98); }
+  .cta-unavailable {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    border-radius: 12px;
+    padding: 14px;
+    font-size: 14.5px;
+    font-weight: 600;
+    background: var(--muted-chip);
+    color: var(--text-muted);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+</style>
+
+<div class="app" id="app">
+  <div class="stage" id="stage">
+
+    <section class="screen screen-list" id="screen-list">
+      <header class="topbar">
+        <p class="eyebrow">Soumission Rénovation</p>
+        <h1 class="title">Site Board</h1>
+        <p class="subtext" id="count-text">6 leads available</p>
+      </header>
+      <div class="chips" id="chips" role="group" aria-label="Filter by project type"></div>
+      <ul class="list" id="list"></ul>
+    </section>
+
+    <section class="screen screen-detail" id="screen-detail" aria-hidden="true">
+      <header class="detail-top">
+        <button class="back-btn" id="back-btn" type="button" aria-label="Back to Site Board">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          Board
+        </button>
+        <span class="detail-id" id="detail-id"></span>
+      </header>
+      <div id="detail-content"></div>
+    </section>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var ICONS = {
+    kitchen: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="10" width="18" height="4" rx="1"></rect><circle cx="8" cy="6" r="2.2"></circle><circle cx="16" cy="6" r="2.2"></circle><path d="M4 17h16l-1.2 3.4a1 1 0 0 1-.95.6H6.15a1 1 0 0 1-.95-.6L4 17Z"></path></svg>',
+    bathroom: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16v3a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4v-3Z"></path><path d="M6 12V8a2 2 0 0 1 3.2-1.6"></path><line x1="17" y1="4" x2="17" y2="8"></line><line x1="4" y1="19" x2="4" y2="21"></line><line x1="20" y1="19" x2="20" y2="21"></line></svg>',
+    basement: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 20 4 16 9 16 9 12 14 12 14 8 20 8"></polyline><line x1="20" y1="8" x2="20" y2="4"></line></svg>',
+    roof: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12 12 4l9 8"></path><line x1="17" y1="7.5" x2="17" y2="4"></line><path d="M5 12v7a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-7"></path></svg>',
+    deck: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="8" x2="21" y2="8"></line><line x1="3" y1="13" x2="21" y2="13"></line><line x1="3" y1="18" x2="21" y2="18"></line><line x1="6" y1="4" x2="6" y2="20"></line></svg>',
+    home: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7"></path><path d="M6 10v9a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-9"></path><line x1="10" y1="20" x2="10" y2="14" ></line><line x1="14" y1="20" x2="14" y2="14"></line></svg>'
+  };
+
+  var LOCK_ICON = '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="9" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>';
+
+  var CATEGORY_LABEL = {
+    kitchen: "Kitchen",
+    bathroom: "Bathroom",
+    basement: "Basement",
+    roof: "Roofing",
+    deck: "Exterior",
+    home: "Full-Home"
+  };
+
+  // Sample data — fields match the contractor's real schema:
+  // ID, Type of Project, City, Postal Code, Start Date, Budget,
+  // Project Description, Price of the Lead, CTA
+  var PROJECTS = [
+    {
+      id: "LD-1042",
+      category: "kitchen",
+      type: "Kitchen Remodel",
+      city: "Montréal",
+      postalCode: "H2X 1K4",
+      startDate: "Jun 2, 2026",
+      budget: "$42,500",
+      description: "Full gut renovation of a 1960s galley kitchen — new layout opens the room to the dining area, with an island seating three.",
+      leadPrice: "$55",
+      cta: true
+    },
+    {
+      id: "LD-1043",
+      category: "bathroom",
+      type: "Bathroom Renovation",
+      city: "Laval",
+      postalCode: "H7T 2P3",
+      startDate: "Flexible",
+      budget: "$18,200",
+      description: "Renovation of a second-floor bathroom, converting a tub/shower combo to a curbless walk-in shower.",
+      leadPrice: "$38",
+      cta: true
+    },
+    {
+      id: "LD-1044",
+      category: "basement",
+      type: "Basement Finishing",
+      city: "Longueuil",
+      postalCode: "J4K 4Z2",
+      startDate: "Feb 10, 2026",
+      budget: "$35,000",
+      description: "Unfinished basement to be converted into a family room, home office nook, and a three-piece bathroom.",
+      leadPrice: "$45",
+      cta: false
+    },
+    {
+      id: "LD-1045",
+      category: "roof",
+      type: "Roof Replacement",
+      city: "Terrebonne",
+      postalCode: "J6Y 1V9",
+      startDate: "Jul 21, 2026",
+      budget: "$22,750",
+      description: "Tear-off and replacement of aging asphalt shingles on a seasonal cottage, including flashing and soffit repairs.",
+      leadPrice: "$40",
+      cta: true
+    },
+    {
+      id: "LD-1046",
+      category: "deck",
+      type: "Deck & Exterior",
+      city: "Boucherville",
+      postalCode: "J4B 5E7",
+      startDate: "Awaiting permit",
+      budget: "$15,900",
+      description: "Rear deck rebuild with composite decking and a pergola, pending municipal permit approval.",
+      leadPrice: "$30",
+      cta: false
+    },
+    {
+      id: "LD-1047",
+      category: "home",
+      type: "Full Home Renovation",
+      city: "Repentigny",
+      postalCode: "J6A 3K1",
+      startDate: "Flexible",
+      budget: "$128,000",
+      description: "Whole-home renovation spanning kitchen, two bathrooms, and an open-concept main floor reconfiguration.",
+      leadPrice: "$85",
+      cta: true
+    }
+  ];
+
+  var FILTERS = [
+    { key: "all", label: "All" },
+    { key: "kitchen", label: "Kitchen" },
+    { key: "bathroom", label: "Bathroom" },
+    { key: "basement", label: "Basement" },
+    { key: "roof", label: "Roofing" },
+    { key: "deck", label: "Exterior" },
+    { key: "home", label: "Full-Home" }
+  ];
+
+  var app = document.getElementById("app");
+  var listEl = document.getElementById("list");
+  var chipsEl = document.getElementById("chips");
+  var countText = document.getElementById("count-text");
+  var detailContent = document.getElementById("detail-content");
+  var detailId = document.getElementById("detail-id");
+  var backBtn = document.getElementById("back-btn");
+  var screenDetail = document.getElementById("screen-detail");
+  var screenList = document.getElementById("screen-list");
+
+  var activeFilter = "all";
+
+  function leadTag(p) {
+    return p.cta
+      ? '<span class="chip-tag available">' + p.leadPrice + "</span>"
+      : '<span class="chip-tag claimed">Claimed</span>';
+  }
+
+  function renderChips() {
+    chipsEl.innerHTML = FILTERS.map(function (f) {
+      var count = f.key === "all" ? PROJECTS.length : PROJECTS.filter(function (p) { return p.category === f.key; }).length;
+      return '<button class="chip" type="button" data-filter="' + f.key + '" aria-pressed="' + (f.key === activeFilter) + '">' + f.label + " (" + count + ")</button>";
+    }).join("");
+  }
+
+  function renderList() {
+    var visible = activeFilter === "all" ? PROJECTS : PROJECTS.filter(function (p) { return p.category === activeFilter; });
+    countText.textContent = visible.length + (visible.length === 1 ? " lead available" : " leads available");
+
+    if (!visible.length) {
+      listEl.innerHTML = '<li class="empty">No leads match this filter.</li>';
+      return;
+    }
+
+    listEl.innerHTML = visible.map(function (p) {
+      return (
+        '<li>' +
+        '<button class="card" type="button" data-id="' + p.id + '">' +
+        '<span class="card-icon">' + ICONS[p.category] + "</span>" +
+        '<span class="card-body">' +
+        '<p class="card-name">' + p.type + "</p>" +
+        '<p class="card-type">' + p.city + ", " + p.postalCode + "</p>" +
+        '<span class="card-meta"><span>' + p.budget + "</span><span>&middot;</span>" + leadTag(p) + "</span>" +
+        "</span>" +
+        '<span class="card-chevron"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></span>' +
+        "</button>" +
+        "</li>"
+      );
+    }).join("");
+  }
+
+  function factRow(label, value, highlight) {
+    return '<div class="fact-row' + (highlight ? " highlight" : "") + '"><span class="fact-label">' + label + '</span><span class="fact-value">' + value + "</span></div>";
+  }
+
+  function renderDetail(p) {
+    detailId.textContent = p.id;
+    var cta = p.cta
+      ? '<button class="cta-btn" type="button">Get This Lead — ' + p.leadPrice + "</button>"
+      : '<div class="cta-unavailable">' + LOCK_ICON + '<span style="margin-left:8px;">Lead already claimed</span></div>';
+
+    detailContent.innerHTML =
+      '<div class="detail-body">' +
+      '<div class="project-card">' +
+      '<div class="card-section card-header">' +
+      '<span class="card-header-icon">' + ICONS[p.category] + "</span>" +
+      '<span class="card-header-text">' +
+      '<p class="eyebrow-type">' + CATEGORY_LABEL[p.category] + " Lead</p>" +
+      '<h2 class="detail-name">' + p.type + "</h2>" +
+      '<p class="detail-address">' + p.city + ", " + p.postalCode + "</p>" +
+      "</span>" +
+      "</div>" +
+      '<div class="card-section facts-simple">' +
+      factRow("Start date", p.startDate) +
+      factRow("Budget", p.budget) +
+      factRow("Price of the lead", p.leadPrice, true) +
+      "</div>" +
+      '<div class="card-section"><h3>Project description</h3><p class="description">' + p.description + "</p></div>" +
+      '<div class="card-section">' + cta + "</div>" +
+      "</div>" +
+      "</div>";
+  }
+
+  function openProject(id, pushHistory) {
+    var p = PROJECTS.filter(function (x) { return x.id === id; })[0];
+    if (!p) return;
+    renderDetail(p);
+    app.classList.add("detail-open");
+    screenDetail.setAttribute("aria-hidden", "false");
+    screenList.setAttribute("aria-hidden", "true");
+    if (pushHistory !== false) {
+      history.pushState({ project: id }, "", "#" + id);
+    }
+    backBtn.focus();
+  }
+
+  function closeProject(pushHistory) {
+    app.classList.remove("detail-open");
+    screenDetail.setAttribute("aria-hidden", "true");
+    screenList.setAttribute("aria-hidden", "false");
+    if (pushHistory !== false && history.state && history.state.project) {
+      history.back();
+    }
+  }
+
+  listEl.addEventListener("click", function (e) {
+    var card = e.target.closest(".card");
+    if (card) openProject(card.getAttribute("data-id"), true);
+  });
+
+  chipsEl.addEventListener("click", function (e) {
+    var chip = e.target.closest(".chip");
+    if (!chip) return;
+    activeFilter = chip.getAttribute("data-filter");
+    renderChips();
+    renderList();
+  });
+
+  backBtn.addEventListener("click", function () { closeProject(true); });
+
+  window.addEventListener("popstate", function (e) {
+    if (e.state && e.state.project) {
+      openProject(e.state.project, false);
+    } else {
+      closeProject(false);
+    }
+  });
+
+  var initialId = location.hash ? location.hash.slice(1) : "";
+  renderChips();
+  renderList();
+  if (initialId && PROJECTS.some(function (p) { return p.id === initialId; })) {
+    openProject(initialId, false);
+  }
+})();
+</script>
