@@ -413,6 +413,14 @@
     font-weight: 700;
   }
 
+  .map-frame {
+    display: block;
+    width: 100%;
+    height: 160px;
+    border: none;
+    border-radius: 8px;
+  }
+
   .section-card h3 {
     font-size: 11px;
     font-weight: 700;
@@ -526,6 +534,26 @@
   };
 
   var LOCK_ICON = '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="9" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>';
+
+  // Approximate city-centre coordinates (we only have City + Postal Code,
+  // not a street address, so the map centers on the city, not a precise pin).
+  var CITY_COORDS = {
+    "Montréal": [45.5017, -73.5673],
+    "Laval": [45.6066, -73.7124],
+    "Longueuil": [45.5312, -73.5185],
+    "Terrebonne": [45.7057, -73.6468],
+    "Boucherville": [45.6067, -73.4384],
+    "Repentigny": [45.7423, -73.4514]
+  };
+
+  function mapEmbedUrl(city) {
+    var coords = CITY_COORDS[city];
+    if (!coords) return null;
+    var lat = coords[0], lon = coords[1];
+    var dLat = 0.018, dLon = 0.026;
+    var bbox = [lon - dLon, lat - dLat, lon + dLon, lat + dLat].join(",");
+    return "https://www.openstreetmap.org/export/embed.html?bbox=" + bbox + "&layer=mapnik&marker=" + lat + "," + lon;
+  }
 
   var CATEGORY_LABEL = {
     kitchen: "Kitchen",
@@ -705,6 +733,10 @@
       '<p class="detail-address">' + p.city + ", " + p.postalCode + "</p>" +
       "</span>" +
       "</div>" +
+
+      (mapEmbedUrl(p.city)
+        ? '<div class="section-card"><h3>Location</h3><iframe class="map-frame" src="' + mapEmbedUrl(p.city) + '" loading="lazy" title="Map showing ' + p.city + '"></iframe></div>'
+        : "") +
 
       '<div class="section-card facts-simple">' +
       factRow("Start date", p.startDate) +
