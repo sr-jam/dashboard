@@ -10,7 +10,7 @@
   }
 
   :root {
-    --bg: #F9FAFB;
+    --bg: #F2F4F7;
     --surface: #FFFFFF;
     --surface-2: #F2F4F7;
     --text: #101828;
@@ -734,15 +734,15 @@
       "</span>" +
       "</div>" +
 
-      (mapEmbedUrl(p.city)
-        ? '<div class="section-card"><h3>Location</h3><iframe class="map-frame" src="' + mapEmbedUrl(p.city) + '" loading="lazy" title="Map showing ' + p.city + '"></iframe></div>'
-        : "") +
-
       '<div class="section-card facts-simple">' +
       factRow("Start date", p.startDate) +
       factRow("Budget", p.budget) +
       factRow("Price of the lead", p.leadPrice, true) +
       "</div>" +
+
+      (mapEmbedUrl(p.city)
+        ? '<div class="section-card"><h3>Location</h3><iframe class="map-frame" src="' + mapEmbedUrl(p.city) + '" loading="lazy" title="Map showing ' + p.city + '"></iframe></div>'
+        : "") +
 
       '<div class="section-card"><h3>Project description</h3><p class="description">' + p.description + "</p></div>" +
 
