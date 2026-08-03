@@ -22,6 +22,7 @@
     --success: #079455;
     --success-soft: rgba(7,148,85,0.12);
     --muted-chip: #F2F4F7;
+    --error: #D92D20;
   }
 
   * { box-sizing: border-box; }
@@ -37,12 +38,60 @@
     overscroll-behavior-y: contain;
   }
   .app {
+    display: none;
     max-width: 480px;
     margin: 0 auto;
     height: 100dvh;
     position: relative;
     overflow: hidden;
     background: var(--bg);
+  }
+
+  /* ---- Password gate ---- */
+  .gate {
+    max-width: 480px;
+    margin: 0 auto;
+    height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .gate-card {
+    width: 100%;
+    max-width: 340px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .gate-card .eyebrow { margin-bottom: 6px; }
+  .gate-card .title { font-size: 22px; }
+  .gate-card .subtext { margin: 6px 0 20px; }
+  .gate-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .gate-input {
+    width: 100%;
+    font-family: inherit;
+    font-size: 15px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: var(--bg);
+    color: var(--text);
+  }
+  .gate-input:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+  .gate-error {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--error);
   }
   .stage {
     position: absolute;
@@ -365,6 +414,19 @@
   }
 </style>
 
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <p class="eyebrow">Soumission Rénovation</p>
+    <h1 class="title">Site Board</h1>
+    <p class="subtext">Enter the password to continue.</p>
+    <form class="gate-form" id="gate-form">
+      <input class="gate-input" id="gate-input" type="password" placeholder="Password" autocomplete="off" autofocus />
+      <button class="cta-btn" type="submit">Unlock</button>
+      <p class="gate-error" id="gate-error" hidden>Incorrect password — try again.</p>
+    </form>
+  </div>
+</div>
+
 <div class="app" id="app">
   <div class="stage" id="stage">
 
@@ -643,5 +705,37 @@
   if (initialId && PROJECTS.some(function (p) { return p.id === initialId; })) {
     openProject(initialId, false);
   }
+
+  // ---- Password gate ----
+  // Note: this only deters casual visitors. It runs entirely in the
+  // browser, so the password and page content are visible to anyone
+  // who opens dev tools or views source — it is not real security.
+  var GATE_KEY = "site-board-unlocked";
+  var GATE_PASSWORD = "dashboard";
+  var gate = document.getElementById("gate");
+  var gateForm = document.getElementById("gate-form");
+  var gateInput = document.getElementById("gate-input");
+  var gateError = document.getElementById("gate-error");
+
+  function unlock() {
+    gate.style.display = "none";
+    app.style.display = "block";
+  }
+
+  if (localStorage.getItem(GATE_KEY) === "1") {
+    unlock();
+  }
+
+  gateForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    if (gateInput.value === GATE_PASSWORD) {
+      localStorage.setItem(GATE_KEY, "1");
+      unlock();
+    } else {
+      gateError.hidden = false;
+      gateInput.value = "";
+      gateInput.focus();
+    }
+  });
 })();
 </script>
