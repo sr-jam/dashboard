@@ -276,12 +276,16 @@
     gap: 6px;
     min-width: 0;
   }
-  .unseen-dot {
+  .new-badge {
     flex: none;
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--accent-contrast);
     background: var(--accent);
+    padding: 2px 7px;
+    border-radius: 100px;
   }
   .card-name {
     font-size: 15px;
@@ -781,7 +785,7 @@
         '<button class="card' + (seen ? " is-seen" : "") + '" type="button" data-id="' + p.id + '">' +
         '<span class="card-icon">' + ICONS[p.category] + "</span>" +
         '<span class="card-body">' +
-        '<span class="card-title-row">' + (seen ? "" : '<span class="unseen-dot" aria-hidden="true"></span>') + '<p class="card-name">' + p.type + "</p></span>" +
+        '<span class="card-title-row"><p class="card-name">' + p.type + "</p>" + (seen ? "" : '<span class="new-badge">New</span>') + "</span>" +
         '<p class="card-type">' + p.city + ", " + p.postalCode + "</p>" +
         '<span class="card-meta"><span>' + p.budget + "</span><span>&middot;</span>" + leadTag(p) + "</span>" +
         "</span>" +
